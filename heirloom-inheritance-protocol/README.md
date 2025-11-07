@@ -15,7 +15,7 @@ _A short, descriptive name of your project._
 ## Team
 
 - Team/Individual Name: Legacy Protocol
-- GitHub Handles @cruujon, @DaroMacs , @masaun
+- GitHub Handles @cruujon, @DaroMacs , @cooldev1337
 - Devfolio Handles: cruujon, daro_macs, web3path
 
 ## Problems in the Field and Product Value
