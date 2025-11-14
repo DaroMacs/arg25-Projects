@@ -1,218 +1,401 @@
-# ARG25 Project Submission Template
+# Heritage Inheritance Protocol
 
-Welcome to Invisible Garden- ARG25.
-
-Each participant or team will maintain this README throughout the program.  
-You'll update your progress weekly **in the same PR**, so mentors and reviewers can track your journey end-to
-
-## Project Title : ### Heirloom Inheritance Protocol"
-
-_A short, descriptive name of your project._
-— A tool that allows people who wish to preserve cultural assets or secret knowledge to securely and permanently pass them down to others across generations.
-
-## Team
-
-- Team/Individual Name: Legacy Protocol
-- GitHub Handles @cruujon, @DaroMacs
-- Devfolio Handles: cruujon, daro_macs
-
-## Problems in the Field and Product Value
-
-### Field Situation
-
-Currently, those who want to pass down their knowledge or skills have no choice but to share secret information directly—either orally or on paper.
-
-There is no verifiable way to record _who passed it to whom_, which makes the extinction of such knowledge a real risk.
-
-Traditional craftsmanship is disappearing globally, not only because knowledge is lost, but because its transmission is invisible to institutions and future generations. By anchoring these acts of transmission on-chain — with auditable records and public funding mechamism— we make cultural succession visible. This creates traceable evidence that can be used by local governments, museums, and preservation programs to recognize, fund, and protect these practices in a transparent and community-controlled way.
-
-### Therefore, We Propose
-
-By recording _who (wallet)_ has passed their knowledge to _whom (wallet)_ on the blockchain, we can preserve the lineage and history of these successions permanently.
-
-At the same time, by using **client-side encryption** and **distributed storage** (e.g., IPFS), we enable private and secure inheritance of valuable information across generations—without making the contents public.
-
-- Secret information can be inherited securely from one wallet address to another.
-- As a result, traditional cultural assets and valuable private knowledge can be preserved and carried forward through time.
+_A tool for securely passing cultural assets or secret knowledge across generations._
 
 ---
 
-## Product Purpose (Purpose)
+# Project Title
 
-To make the process of inheriting personal knowledge and skills permanently traceable as a trustworthy record.
+**Heritage Inheritance Protocol**
+
+Short concept: A tool that allows people who wish to preserve cultural assets or secret knowledge to securely and permanently pass them down to others across generations.
+
+---
+
+### Repository / MVP / DEMO
+
+- **Repository:** https://github.com/Heirloom-Inheritance-Protocol
+- **MVP page:** https://heirloom-inheritance-protocol.vercel.app/
+- **Deck / Presentation:** https://docs.google.com/presentation/d/1HbvQ5WrT1ixoNJFvNQ_snX9PHyXFh6y4JEpv3stpHbs/edit?usp=sharing
+
+---
+# Team
+
+**Team/Individual Name:**
+
+- Keita Kuroiwa, Dario Macs
+
+**GitHub Handles:**
+
+- cruujon, DaroMacs
+
+**Devfolio Handles:**
+
+- cruujon, daro_macs
 
 ---
 
-## Scope
+# Project Description
 
-✔ Recording the history of inheritance on-chain
+## Problem / Motivation
 
-✔ Encrypted storage of secret data off-chain
+Currently, those who want to pass down their knowledge or skills have no choice but to share secret information directly — either orally or on paper.  
+There is no verifiable way to record _who passed it to whom_, which makes extinction of such knowledge a real risk.
 
-✔ Wallet-to-wallet handoff via **signed, encrypted payloads** (no fixed messaging stack required)
+Traditional craftsmanship is disappearing globally not only because knowledge is lost, but because the act of transmission is invisible to institutions and future generations.  
+Anchoring these successions on-chain — with auditable records and public funding mechanisms — makes cultural inheritance _visible_ and _preservable_.
 
----
+Additional risks:
+
+- Even though such cultural assets are meaningful and important to preserve, it is often unclear who contributed to their preservation.
+- Historically sensitive knowledge is vulnerable to censorship by institutions or governments. Oral traditions can be altered, sanitized, or erased.
+
+## Solution
+
+- Record _who (wallet)_ passed knowledge to _whom (wallet)_ on-chain, preserving lineage and provenance.
+- Encrypt content **client-side** so the knowledge itself remains private.
+- Store encrypted data on IPFS; only its hash (CID) is referenced on-chain.
+- Only the designated successor's wallet can derive the correct key to decrypt the content.
+- This enables preservation of private cultural assets without forcing public disclosure.
 
 ## Target Users
 
-Individuals who wish to pass down their valuable private knowledge to the next generation **without making it public**.
-
-Examples:
-
-- A restaurant owner who possesses a secret recipe (a trade secret) but has no successor.
-- A craftsman who holds local traditional techniques or special know-how that cannot be publicly shared.
-
----
-
-## Functional Requirements
-
-### Essential Features
-
-- **Encrypted handoff**: grant a specific wallet address the ability to decrypt the secret and (optionally) pass it onward.
-  - Mechanism: client-side symmetric encryption (e.g., AES-GCM) + **key wrap** to the successor’s public key (e.g., X25519/ECDH → AES-GCM key wrap).
-  - Delivery: export a **signed JSON/QR/bundle** that the successor can receive via any secure channel (download link, QR scan, file transfer).
-- **Distributed storage**: store the encrypted content on IPFS/Arweave; only a **CID/hash** is ever referenced on-chain.
-- **Blockchain-based record**: record _who transferred inheritance rights to whom_ (lineage events) as immutable on-chain events.
-  - Optional: represent current right-holder as an NFT for wallet visibility.
+- Individuals wanting to pass down secret or valuable knowledge _privately_.
+- Examples:
+  - A restaurant owner with a secret recipe but no successor.
+  - Craftsmen with unique techniques that cannot be publicized.
+  - Oral storytelling traditions and local cultural narratives.
 
 ---
 
-## MVP Success Criteria (Definition of Completion)
+# Key Features
 
-### Short-Term (Within the Hackathon) – Mandatory
+- **Client-side encrypted inheritance**
 
-- Record at least one **inheritance event** from one wallet to another on-chain and show the Tx hash.
-- Produce and deliver a **signed, encrypted payload** (download or QR) from originator to successor, and **successfully decrypt** it on the successor’s device.
-- A UI that clearly shows “inheritance completed” and renders the on-chain lineage (A → B) with timestamps.
+  - The owner selects a PDF and a successor wallet address.
+  - File is encrypted entirely in the browser using **AES-256-GCM**.
+  - The AES key is derived from the successor’s Ethereum address via **PBKDF2 (100,000 iterations)**.
 
-### If Possible (Optional)
+- **Successor-only decryption**
 
-- Show an NFT in the successor’s wallet that represents the inherited right.
+  - Only the wallet that matches the successor address can regenerate the AES key.
 
----
+- **IPFS-based decentralized storage**
 
-## Architecture
+  - Only encrypted blobs are uploaded.
+  - Blob format: `[IV (12 bytes)][Encrypted Data]`.
 
-### Blockchain
+- **On-chain lineage**
 
-- **Arbitrum** (testnet) → public ledger for inheritance records.
-- **Registry / (optional) Rights NFT** smart contracts → represent and guarantee inheritance rights; emit `SecretRegistered` / `Inherited` events.
+  - Immutable record of: owner → successor, `ipfsHash`, `fileName`, `fileSize`, `timestamp`, and status flags.
+  - Creates verifiable historical context for each inheritance.
 
-### Delivery Layer (no XMTP)
-
-- **Signed, encrypted payloads** handed off via any channel (download URL with short expiry, QR code, secure file transfer, etc.).
-- Payload includes: `{ secretId, cid, wrappedKey, senderSignature, createdAt }`.
-
-### Storage
-
-- **IPFS (Pinning service)** for encrypted content; on-chain stores only `cidHash`.
-- (Optional) **Arweave** for long-term persistence.
+- **End-to-end flow**
+  - Originator: encrypt → upload → register on-chain
+  - Successor: verify → fetch → decrypt → download
 
 ---
 
-## <<<<<<< HEAD
+# Architecture Overview
 
-=======
+## System Components
 
-> > > > > > > b927b64 (Update Legacy Protocol README content)
+- **Frontend (Next.js + Wagmi + viem)**  
+  Handles:
 
-## Constraints
+  - file encryption/decryption (Web Crypto API)
+  - IPFS upload/download (via API route or direct)
+  - contract calls
+  - lineage display
 
-### Limitations (Out of Scope for This MVP)
+- **Blockchain (Arbitrum Sepolia / Solidity)**  
+  Responsible for:
 
-- Strict, audited file-encryption UX (use well-known primitives but keep UX simple).
-- Policy-based automatic re-encryption (e.g., PRE / Lit) — only mention as a future track.
+  - storing inheritance metadata
+  - verifying successor identity (`msg.sender`)
+  - preserving lineage
 
-### Assumptions
-
-- A wallet address represents the intended individual successor.
-- Secret data is encrypted client-side and never visible to the application backend or the blockchain.
+- **Storage: IPFS**
+  - Stores encrypted blobs only.
+  - Contract stores the `ipfsHash` as reference.
 
 ---
 
-## Minimal Contract Surface (for reference)
+## Inheritance Flow Diagram
 
-- `registerSecret(bytes32 cidHash, bytes meta) returns (uint256 secretId)`
-- `inherit(uint256 secretId, address to)`
-- `event SecretRegistered(uint256 indexed secretId, address indexed owner, bytes32 cidHash, uint256 time)`
-- `event Inherited(uint256 indexed secretId, address indexed from, address indexed to, uint256 time)`
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                        INHERITANCE FLOW                          │
+└─────────────────────────────────────────────────────────────────┘
 
-## User Flow
+1️⃣  OWNER CREATES INHERITANCE
+   ┌──────────────┐
+   │ Select PDF   │
+   │ + Successor  │
+   └──────┬───────┘
+          │
+          ▼
+   ┌─────────────────────────┐
+   │ ENCRYPT CLIENT-SIDE     │
+   │ • Use successor address │
+   │ • AES-256-GCM           │
+   │ • Generate random IV    │
+   └──────┬──────────────────┘
+          │
+          ▼
+   ┌─────────────────────────┐
+   │ UPLOAD TO IPFS          │
+   │ • Encrypted file only   │
+   │ • Returns IPFS hash     │
+   └──────┬──────────────────┘
+          │
+          ▼
+   ┌─────────────────────────┐
+   │ STORE ON BLOCKCHAIN     │
+   │ • IPFS hash             │
+   │ • Successor address     │
+   │ • Metadata              │
+   └─────────────────────────┘
 
-## User Flow (MVP)
+2️⃣  SUCCESSOR CLAIMS INHERITANCE
+   ┌──────────────────────────┐
+   │ Connect Wallet           │
+   │ (Must be successor)      │
+   └──────┬───────────────────┘
+          │
+          ▼
+   ┌─────────────────────────┐
+   │ VERIFY ON BLOCKCHAIN    │
+   │ • Check successor match │
+   │ • Verify not claimed    │
+   └──────┬──────────────────┘
+          │
+          ▼
+   ┌─────────────────────────┐
+   │ FETCH FROM IPFS         │
+   │ • Download encrypted    │
+   │ • Extract IV + data     │
+   └──────┬──────────────────┘
+          │
+          ▼
+   ┌─────────────────────────┐
+   │ DECRYPT CLIENT-SIDE     │
+   │ • Use their address     │
+   │ • Decrypt with key      │
+   │ • Download PDF          │
+   └─────────────────────────┘
+```
 
-### Flow 1 — Register a Secret (Originator)
+---
 
-1. **Encrypt** (client-side): generate `symKey (AES-GCM)`, then `ciphertext = Encrypt(symKey, plaintext)`.
-2. **Store**: upload `ciphertext` to IPFS → get `cid`; compute `cidHash = keccak256(cid)`.
-3. **Commit**: call `Registry.registerSecret(cidHash, meta)` → event `SecretRegistered(secretId, owner, cidHash, time)`.
+# Core User Flow
 
-### Flow 2 — Handoff & Lineage Record (Originator → Successor)
+## 1. Creating an Inheritance (Originator)
 
-1. **Key wrap**: derive shared secret with successor’s public key (X25519/ECDH) and **wrap `symKey`** (AES-GCM).
-2. **Bundle**: create a signed payload `{ secretId, cid, wrappedKey, senderSignature }`.
-3. **Deliver**: show **QR** or provide a **download button** (the file can be transferred over any channel).
-4. **On-chain lineage**: call `Registry.inherit(secretId, to=Successor)` → event `Inherited(secretId, from, to, time)`.
+<img width="814" height="780" alt="image" src="https://github.com/user-attachments/assets/37d357ec-621d-46ea-9807-c7f92191c971" />
 
-### Flow 3 — Receive & Decrypt (Successor)
+**1-0. Connect Wallet**  
+Connect your wallet to the app.  
+Non-crypto users can also generate a wallet easily using just an email address.
 
-1. **Import**: the successor loads the bundle (scan QR or upload the file).
-2. **Unwrap**: decrypt `wrappedKey` with successor’s private key → recover `symKey`.
-3. **Fetch & Decrypt**: pull `ciphertext` by `cid` from IPFS, `Decrypt(symKey, ciphertext)` locally.
-4. **UI**: show “Decrypted ✅” and render the lineage `A → B` from events.
+**1-1. Prepare the Knowledge Asset**  
+The originator prepares the secret or culturally valuable information they wish to pass down — such as a recipe, a craft technique, or any sensitive document — in **PDF format**.
 
-_What are the specific outcomes you aim to achieve by the end of ARG25?_
+**1-2. Set the Successor Wallet in the "Inherit" tab**  
+At the **Successor Wallet** field in the Inherit section tab, enter the wallet address of the person who will inherit the information.
 
-get to the grants and focus on consistent building and find a PMF
+**1-3. Upload the PDF**  
+Click **Upload PDF** and select the file you want to inherit.
 
-## Weekly Progress
+**1-4. Choose a Tag Type**  
+Select a relevant tag such as _Recipe_, _Cultural Heritage_, _Finance_, etc.  
+(These tags allow efficient querying and classification in the database.)
 
-### Week 1 (ends Oct 31)
+**1-5. Create Inheritance**  
+Click **Create Inheritance**.  
+Your wallet will request a signature. Once signed, the file is **encrypted client-side** and safely uploaded to **IPFS**.
 
-**Goals:** team up & bouncing idea off
+**1-6. Access via Vaults**  
+Uploaded inheritance entries can always be accessed and searched under the **Vaults** tab.
+
+---
+
+## 2. Receiving an Inheritance (Successor)
+
+<img width="1063" height="894" alt="image" src="https://github.com/user-attachments/assets/8daa2466-e67e-41a6-a616-7ccb6ad166ad" />
+
+**2-0. Connect Wallet**  
+The chosen successor connects using the **same wallet address** registered by the originator.
+
+**2-1. View Received Metadata in the "Received / Vaults" tab**  
+Once connected, the successor can open the **Received / Vaults** section to view metadata for all inheritance entries sent to them.
+
+**2-2. Download & Decrypt**  
+Click **Download (DL)**.  
+The encrypted file is fetched and automatically decrypted locally, then saved safely to the successor’s device.
+
+---
+
+## 3. Verifying and Evaluating Inheritances in Graph View in the "Dashboard" tab
+
+<img width="869" height="819" alt="image" src="https://github.com/user-attachments/assets/36022cca-c05a-4920-8a24-52a8b5cc2220" />
+
+**3-1. Visual Lineage Graph**  
+All contributors in an inheritance chain — originators, successors, and cultural organizations curating heritage — can visually review each succession event.  
+The dashboard presents a **graph of parent–child inheritance relationships**, showing how knowledge has been passed across generations.
+
+Additional insights include:
+
+- Automatic counting of total contributors in each inheritance chain
+- Easy identification of branching cultural lineages
+- High-level visibility into how cultural assets evolve
+
+Example external stakeholders who may access the graph view:  
+_Local governments, museums, cultural preservation NGOs, public goods organizations_
+
+**3-2. Evidence for Public Goods Funding and Access Control**  
+External organizations can use the verifiable on-chain proof of inheritance to:
+
+- Evaluate cultural preservation contributions
+- Use inheritance lineage as **evidence** in public-goods or grant-funding processes
+- Apply **gating criteria** (e.g., only contributors of a specific inheritance chain can access a program, benefit, or grant)
+
+This ensures that historical knowledge is preserved with integrity and that contributors receive recognition and opportunities aligned with their cultural work.
+
+# Encryption & Decryption Flow (MVP)
+
+## 1. Owner (Originator)
+
+1. Select PDF + successor wallet address.
+2. Derive AES key with PBKDF2(successorAddress, 100k iterations).
+3. Encrypt file using AES-256-GCM (with random 12-byte IV).
+4. Create blob: `[IV][ciphertext]`.
+5. Upload encrypted blob to IPFS via API route or client-side upload.
+6. Call `createInheritance(successor, ipfsHash, tag, fileName, fileSize)`.
+
+## 2. Successor (Receiver)
+
+1. Connect wallet.
+2. Contract verifies:
+   - caller == successor
+   - inheritance is active & unclaimed
+3. Fetch encrypted blob from IPFS.
+4. Derive AES key from successor’s address (PBKDF2).
+5. Decrypt and download PDF.
+6. Optionally call `claimInheritance(id)` to mark as received.
+
+---
+
+# Security Properties (MVP)
+
+- Files are encrypted **before upload** (E2E).
+- Only successor wallet can derive the correct key.
+- No keys stored on-chain, off-chain, or in IPFS.
+- IPFS blobs are public but unreadable.
+- On-chain lineage is tamper-proof.
+
+Security limitations:
+
+- If successor wallet is compromised, the encrypted file can be decrypted.
+- No key rotation mechanism yet.
+- Browser-based crypto requires trustworthy hosting.
+
+---
+
+# Tech Stack
+
+- **Blockchain:** Arbitrum Sepolia
+- **Smart Contracts:** Solidity
+- **Frontend:** Next.js 14, TypeScript, Wagmi, viem, shadcn/ui
+- **Storage:** IPFS
+- **Crypto:** Web Crypto API (AES-256-GCM, PBKDF2)
+- **Tooling:** pnpm, dotenv, eslint/prettier
+
+---
+
+# Contract Addresses
+
+- Contract: Inheritance
+- Address: (fill after deployment)
+- Network: Arbitrum Sepolia
+
+---
+
+# Demo
+
+**Main Repository Link**  
+https://github.com/Heirloom-Inheritance-Protocol
+
+**Demo / Deployment Link**  
+https://heirloom-inheritance-protocol.vercel.app/
+
+**Deck / Presentation**  
+https://docs.google.com/presentation/d/1HbvQ5WrT1ixoNJFvNQ_snX9PHyXFh6y4JEpv3stpHbs/edit?usp=sharing
+
+---
+
+# Objectives
+
+By the end of ARG25, the following core objectives were achieved:
+
+- Record at least one _inheritance event_ (owner → successor) on-chain and show the transaction hash.
+- Successfully upload an encrypted file to IPFS and store only the CID on-chain.
+- Ensure that only the designated successor wallet can decrypt the encrypted file.
+- Provide a clear UI workflow:  
+  “inheritance created → inheritance claimable by successor → inheritance claimed → decrypted.”
+
+---
+
+# Weekly Progress
+
+## Week 1 (ends Oct 31)
+
+**Goals:**  
+Team formation and early ideation.
+
+**Progress Summary:**  
+Teamed up with @DaroMacs and @masaun.  
+Explored initial product directions and cultural preservation use cases.
+
+---
+
+## Week 2 (ends Nov 7)
+
+**Goals:**  
+Finalize the core architecture, define encryption and storage flows, and choose the tech stack.
 
 **Progress Summary:**
-teamed up with @DaroMacs , @masaun
 
-### Week 2 (ends Nov 7)
+### Frontend MVP
 
-**Goals:** fix the whole product design and make a rough decision tech stack
+- Scaffolded a Next.js + Wagmi + viem application.
+- Integrated wallet connection and basic transaction handling.
+- Built initial UI for uploading PDFs and showing inheritance lineage.
+- Implemented placeholder IPFS integration to simulate CID workflows.
 
-**Progress Summary:**
-Frontend MVP
+### Documentation
 
-Scaffold the Next.js + Wagmi + viem application and styling components.
+- Added system architecture diagrams to `/docs/ARCHITECTURE.md`.
+- Updated README with contract address placeholders, stack overview, and usage instructions.
 
-Integrate wallet connection, transaction confirmation, and basic lineage visualization.
+### Tech Stack Overview
 
-Simulate IPFS integration by allowing users to input placeholder CIDs.
+- **Blockchain:** Arbitrum Sepolia
+- **Smart Contracts:** Solidity
+- **Frontend:** Next.js 14, TypeScript, Wagmi, viem, shadcn/ui
+- **Storage:** IPFS (CID-based retrieval)
+- **Tooling:** pnpm, dotenv, eslint/prettier
 
-Record one complete flow on testnet (registration → inheritance → lineage display).
+### System Architecture (MVP)
 
-Documentation
+Validated the integration model:
 
-Add architecture diagram and stack summary to /docs/ARCHITECTURE.md.
+- Client-side AES encryption
+- IPFS upload via API route or client
+- On-chain metadata
+- Successor-only decryption
 
-Update README with contract address, tech stack, and project usage instructions.
-
-Stack Overview
-
-Blockchain: Arbitrum Sepolia (EVM-compatible)
-
-Smart Contracts: Solidity, Arbitrum Stylus (for testing & deployment)
-
-Frontend: Next.js 14, TypeScript, Wagmi, viem, shadcn/ui
-
-Storage: IPFS (placeholder CID references for now)
-
-Tooling: pnpm, dotenv, eslint/prettier
-
-System Architecture (MVP)
-
-<img width="379" height="408" alt="image" src="https://github.com/user-attachments/assets/2867107c-252e-4e49-91b5-1c2b46b94335" />
-
-**Progress Summary:**
-we fixed core tech stack and whole architecture to implement at invisible Garden. we already start buiding actual MVP
+---
 
 ## Week 3 (ends Nov 14)
 
@@ -271,8 +454,8 @@ Complete the MVP development and deploy all components.
 ### Repository / MVP / DEMO
 
 - **Repository:** https://github.com/Heirloom-Inheritance-Protocol
-- **MVP page:** https://heirloom-inheritance-protocol.vercel.app
-- **Slides:** https://www.figma.com/make/rSGqrMpI7cr1QmmQGiirqD/Create-Presentation-Material
+- **MVP page:** https://heirloom-inheritance-protocol.vercel.app/
+- **Deck / Presentation:** https://docs.google.com/presentation/d/1HbvQ5WrT1ixoNJFvNQ_snX9PHyXFh6y4JEpv3stpHbs/edit?usp=sharing
 
 ---
 
