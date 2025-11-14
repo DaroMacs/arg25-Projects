@@ -1,13 +1,9 @@
 # ARG25 Project Submission Template
 
-IWANTTODEMO
-
 Welcome to Invisible Garden- ARG25.
 
 Each participant or team will maintain this README throughout the program.  
-You'll update your progress weekly **in the same PR**, so mentors and reviewers can track your journey end-to-end.
-
-> > > > > > > b927b64 (Update Legacy Protocol README content)
+You'll update your progress weekly **in the same PR**, so mentors and reviewers can track your journey end-to
 
 ## Project Title : ### Heirloom Inheritance Protocol"
 
@@ -218,31 +214,83 @@ System Architecture (MVP)
 **Progress Summary:**
 we fixed core tech stack and whole architecture to implement at invisible Garden. we already start buiding actual MVP
 
-### 🗓️ Week 3 (ends Nov 14)
+## Week 3 (ends Nov 14)
 
-**Goals:**
+**Goals:**  
+Complete the MVP development and deploy all components.
 
 **Progress Summary:**
 
-## Final Wrap-Up
+- Smart contract deployed to Arbitrum Sepolia.
+- IPFS integration with actual encrypted blobs is live.
+- Full end-to-end inheritance flow implemented:
+  encrypt → upload → register → claim → decrypt.
+- Users can now experience the full MVP on the live deployment.
 
-_After Week 3, summarize your final state: deliverables, repo links, and outcomes._
+# Next Steps (After Invisible Garden)
 
-- **Main Repository Link:**
-  https://github.com/cruujon/arg25-Projects/branches
+## Short Term
 
-- **Demo / Deployment Link (if any):**
-  buiding it right now.
-- **Slides / Presentation (if any):**
-  https://www.figma.com/make/rSGqrMpI7cr1QmmQGiirqD/Create-Presentation-Material?node-id=0-1&t=c1t97nFrVYKBo0kE-1
+- Deploy to mainnet and expand across multiple L2s.
+- Upgrade encryption model (e.g., migrate from PBKDF2 → ECDH-based key agreement).
+- Integrate with EAS so other protocols can reuse inheritance lineage permissionlessly.
 
-## 🧾 Learnings
+## Medium Term
 
-_What did you learn or improve during ARG25?_
+- **AI Integration**
+
+  - Automatically estimate cultural/economic importance scores for each inheritance.
+  - Auto-tag inherited data for better discoverability.
+  - Match inheritors and successors algorithmically.
+
+- **Funding Mechanisms**
+  - Integrate Gitcoin stack for donation and grant-based preservation funding.
+  - Run funding rounds for cultural assets.
+  - Collaborate with local governments and cultural institutions to test real-world deployments.
+
+---
+
+---
+
+# Final Wrap-Up
+
+### Deliverables
+
+- Fully functional MVP
+- On-chain contract
+- Live frontend with complete user flows
+- Encrypted inheritance mechanism
+- Lineage visibility and basic UI
+
+### Technical Outcomes
+
+- Verified viability of client-side AES-256-GCM encryption + PBKDF2 key derivation tied to successor wallet address.
+- Implemented a minimal yet secure pipeline combining IPFS, Ethereum smart contracts, and browser crypto.
+- Identified areas for improvement (key rotation, ECDH upgrade, multi-layered permissions).
+
+### Repository / MVP / DEMO
+
+- **Repository:** https://github.com/Heirloom-Inheritance-Protocol
+- **MVP page:** https://heirloom-inheritance-protocol.vercel.app
+- **Slides:** https://www.figma.com/make/rSGqrMpI7cr1QmmQGiirqD/Create-Presentation-Material
+
+---
+
+# Learnings
+
+During ARG25, we deepened our understanding of:
+
+- Core Arbitrum Stylus concepts from the lecture series, including how Rust-based contracts interact with the Arbitrum toolchain.
+- Security best practices around client-side encryption, emphasizing key derivation, storage minimization, and safe handling of encrypted payloads.
+- Designing IPFS upload flows that keep the encrypted data decoupled from on-chain references while preserving traceability.
+- Structuring inheritance journeys in the UI so wallet interactions, encryption steps, and status updates remain transparent to non-technical users.
+- Coordinating smart contract events with frontend state to build reliable lineage timelines across deployments and testnets.
+
+---
 
 ## Next Steps
 
-_If you plan to continue development beyond ARG25, what's next?_
-
-_This template is part of the [ARG25 Projects Repository](https://github.com/invisible-garden/arg25-projects)._  
-_Update this file weekly by committing and pushing to your fork, then raising a PR at the end of each week._
+- Craft an investor-facing narrative: package traction metrics, produce a concise pitch deck, and rehearse a scripted demo that highlights lineage tracking, encryption safeguards, and cultural impact.
+- Line up showcase opportunities: schedule live walk-throughs for targeted angels, heritage-focused foundations, and web3 funds; capture demo recordings to share asynchronously.
+- Build an organizational funding module: let verified organizations pledge capital to specific inheritance chains, surface on-chain proofs of contribution, and expose APIs for matching grants.
+- Add treasury controls for funders: support multi-sig or role-gated wallets, transparency dashboards, and automated disbursement rules tied to verified lineage milestones.
