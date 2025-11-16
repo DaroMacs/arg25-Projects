@@ -19,6 +19,7 @@ Short concept: A tool that allows people who wish to preserve cultural assets or
 - **Deck / Presentation:** https://docs.google.com/presentation/d/1HbvQ5WrT1ixoNJFvNQ_snX9PHyXFh6y4JEpv3stpHbs/edit?usp=sharing
 
 ---
+
 # Team
 
 **Team/Individual Name:**
@@ -454,7 +455,7 @@ Complete the MVP development and deploy all components.
 ### Repository / MVP / DEMO
 
 - **Repository:** https://github.com/Heirloom-Inheritance-Protocol
-- **MVP page:** https://heirloom-inheritance-protocol.vercel.app/
+- **MVP page:** https://heritage-inheritance-protocol.vercel.app
 - **Deck / Presentation:** https://docs.google.com/presentation/d/1HbvQ5WrT1ixoNJFvNQ_snX9PHyXFh6y4JEpv3stpHbs/edit?usp=sharing
 
 ---
